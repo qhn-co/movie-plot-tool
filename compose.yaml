@@ -1,0 +1,16 @@
+# Socle local : PostgreSQL 17, comme en production.
+# DATABASE_URL=postgresql+psycopg://movieplot:movieplot@localhost:5433/movieplot
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: movieplot
+      POSTGRES_PASSWORD: movieplot
+      POSTGRES_DB: movieplot
+    ports:
+      - "5433:5432"
+    volumes:
+      - movieplot-db:/var/lib/postgresql/data
+
+volumes:
+  movieplot-db:

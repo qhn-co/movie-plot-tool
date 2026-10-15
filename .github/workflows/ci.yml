@@ -1,0 +1,36 @@
+# La CI ne connaît aucune commande que le poste ne connaît pas : elle appelle `make check`.
+#
+# Runners GitHub et non auto-hébergés : le dépôt est public, et une PR venue d'un fork
+# exécuterait son code sur la machine du runner.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/master' && github.sha || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: make check (ruff, mypy, pytest, oxlint, tsc, vitest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: webapp/package-lock.json
+      - name: Installer les dépendances
+        run: make install
+      - name: make check
+        run: make check
