@@ -26,11 +26,22 @@ export default function FilmPage() {
       </div>
       <div>
         <h1 className="text-3xl font-semibold">{film.title}</h1>
-        <p className="mb-8 mt-1 text-zinc-400">
+        <p className="mt-1 text-zinc-400">
           {year(film.release_date)}
+          {film.director && ` · ${film.director}`}
           {film.original_title !== film.title && ` · ${film.original_title}`}
           {film.vote_average > 0 && ` · ${film.vote_average.toFixed(1)}/10 sur TMDB`}
         </p>
+        <p className="mt-4 text-xl text-zinc-100">{film.analysis.hook}</p>
+        {film.cast.length > 0 && (
+          <p className="mb-8 mt-3 text-sm text-zinc-400">
+            Avec{" "}
+            {film.cast
+              .map((c) => (c.character ? `${c.name} (${c.character})` : c.name))
+              .join(", ")}
+          </p>
+        )}
+        {film.cast.length === 0 && <div className="mb-8" />}
         <Analysis analysis={film.analysis} />
       </div>
     </article>

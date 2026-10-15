@@ -1,11 +1,15 @@
 // Client de l'API : les types reprennent les schémas de `movieplot.api.schemas`.
 
 export type Analysis = {
+  hook: string;
+  memory_cues: string[];
   synopsis: string;
   timeline: string[];
   ending: string;
-  meta_analysis: string;
+  context: string;
 };
+
+export type CastEntry = { name: string; character: string };
 
 export type FilmCard = {
   id: number;
@@ -17,6 +21,8 @@ export type FilmCard = {
 
 export type FilmPage = FilmCard & {
   original_title: string;
+  director: string | null;
+  cast: CastEntry[];
   overview: string;
   analysis: Analysis;
   had_subtitles: boolean;

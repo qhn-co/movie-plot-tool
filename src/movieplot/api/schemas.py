@@ -19,8 +19,15 @@ class FilmCard(BaseModel):
     vote_average: float
 
 
+class CastEntry(BaseModel):
+    name: str
+    character: str
+
+
 class FilmPage(FilmCard):
     original_title: str
+    director: str | None
+    cast: list[CastEntry]
     overview: str
     analysis: Analysis
     had_subtitles: bool

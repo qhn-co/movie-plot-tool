@@ -13,11 +13,20 @@ import anthropic
 from movieplot.analysis import Analysis
 from movieplot.tmdb import MovieDetails
 
-SYSTEM_PROMPT = (
-    "Tu rédiges des fiches de films en français pour un site de culture cinéma. "
-    "Tu t'appuies sur les sous-titres fournis quand il y en a, et tu ne présentes jamais "
-    "une supposition comme un fait de l'intrigue."
-)
+SYSTEM_PROMPT = """\
+Tu rédiges des fiches de films en français pour un site personnel dont le but est d'aider
+quelqu'un à se rappeler un film et à savoir s'il l'a déjà vu.
+
+Règles :
+- Écris comme on raconte un film à un ami : phrases courtes, concrètes, sans jargon critique.
+- Privilégie ce qui reste en mémoire : images fortes, scènes cultes, objets, lieux,
+  musiques, gags, répliques. Une scène vaut mieux qu'un thème.
+- N'écris que ce dont tu es sûr. Les sous-titres fournis font foi sur l'intrigue.
+  Ne cite une réplique entre guillemets que si elle figure dans les sous-titres ou si tu
+  es certain de son texte exact ; sinon, décris le moment sans guillemets.
+- Ne mélange pas le film avec ses suites, son remake ou un homonyme.
+- Les noms des personnages sont ceux de la version française quand elle est connue.
+"""
 
 
 class SummaryError(RuntimeError):
@@ -29,18 +38,20 @@ class Summarizer(Protocol):
 
 
 def build_prompt(movie: MovieDetails, subtitles: str | None) -> str:
-    parts = [
-        f"Film : {movie.title} ({movie.release_date[:4] or 'année inconnue'})",
-        f"Titre original : {movie.original_title}",
-        f"Résumé TMDB : {movie.overview or 'aucun'}",
-    ]
+    heading = f"Film : {movie.title} ({movie.release_date[:4] or 'année inconnue'})"
+    if movie.director:
+        heading += f", réalisé par {movie.director}"
+    parts = [heading, f"Titre original : {movie.original_title}"]
+    if movie.cast:
+        parts.append("Avec : " + ", ".join(member.label() for member in movie.cast))
+    parts.append(f"Résumé TMDB : {movie.overview or 'aucun'}")
     if subtitles:
         parts.append(f"Sous-titres complets du film :\n<subtitles>\n{subtitles}\n</subtitles>")
     else:
-        parts.append("Aucun sous-titre disponible : appuie-toi sur le résumé et sur ce que tu sais du film.")
-    parts.append(
-        "Rédige la fiche : synopsis, chronologie en 5 à 10 étapes, fin, puis analyse."
-    )
+        parts.append(
+            "Aucun sous-titre disponible : appuie-toi sur le résumé et sur ce que tu sais du film."
+        )
+    parts.append("Rédige la fiche.")
     return "\n\n".join(parts)
 
 

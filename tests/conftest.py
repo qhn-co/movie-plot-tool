@@ -11,7 +11,7 @@ from movieplot.config import Settings
 from movieplot.db.models import Base
 from movieplot.db.session import make_engine, make_session_factory
 from movieplot.service import FilmService
-from movieplot.tmdb import MovieDetails, MovieSummary
+from movieplot.tmdb import CastMember, MovieDetails, MovieSummary
 
 ADMIN_PASSWORD = "mot-de-passe-de-test"
 
@@ -24,6 +24,11 @@ INCEPTION = MovieDetails(
     overview="Dom Cobb vole des secrets dans les rêves.",
     poster_url="https://image.tmdb.org/t/p/w500/inception.jpg",
     vote_average=8.4,
+    director="Christopher Nolan",
+    cast=(
+        CastMember("Leonardo DiCaprio", "Dom Cobb"),
+        CastMember("Elliot Page", "Ariadne"),
+    ),
 )
 
 
@@ -62,10 +67,12 @@ class FakeSummarizer:
     def summarize(self, movie: MovieDetails, subtitles: str | None) -> Analysis:
         self.received.append(subtitles)
         return Analysis(
+            hook=f"Le film où {movie.title} se passe dans les rêves.",
+            memory_cues=["Paris se replie sur elle-même.", "Le couloir tourne."],
             synopsis=f"Synopsis de {movie.title}",
             timeline=["Étape 1", "Étape 2", "Étape 3", "Étape 4", "Étape 5"],
             ending="La toupie tourne.",
-            meta_analysis="Rêve et réalité.",
+            context="Gros succès de 2010.",
         )
 
 

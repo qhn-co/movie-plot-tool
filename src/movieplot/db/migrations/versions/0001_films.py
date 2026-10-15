@@ -25,6 +25,8 @@ def upgrade() -> None:
         sa.Column("overview", sa.Text(), nullable=False),
         sa.Column("poster_url", sa.String(500)),
         sa.Column("vote_average", sa.Float(), nullable=False),
+        sa.Column("director", sa.String(300)),
+        sa.Column("cast", sa.JSON(), nullable=False),
         sa.Column("analysis", sa.JSON(), nullable=False),
         sa.Column("had_subtitles", sa.Boolean(), nullable=False),
         sa.Column("model", sa.String(100), nullable=False),

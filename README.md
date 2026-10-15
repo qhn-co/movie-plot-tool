@@ -1,11 +1,11 @@
 # Movie Plot
 
-Des fiches de films en lecture libre : synopsis, chronologie, fin (masquée par défaut) et analyse. Les fiches sont générées par un admin, relues, puis publiées.
+Des fiches de films en lecture libre, faites pour se rappeler un film et savoir si on l'a déjà vu : une accroche, le casting, des scènes marquantes, puis synopsis, chronologie, fin (masquée par défaut) et contexte. Les fiches sont générées par un admin, relues, puis publiées. Domaine prévu : `movieplot.qhn.fr`.
 
 ## Comment ça marche
 
 1. Dans `/admin`, l'admin cherche un film sur TMDB et clique sur « Générer ».
-2. L'API récupère la fiche TMDB, les sous-titres OpenSubtitles (par identifiant IMDb) et demande à Claude une analyse structurée à partir des sous-titres complets.
+2. L'API récupère la fiche TMDB (avec réalisateur et têtes d'affiche), les sous-titres OpenSubtitles (par identifiant IMDb) et demande à Claude une analyse structurée à partir des sous-titres complets.
 3. La fiche est enregistrée en brouillon ; l'admin la publie, la dépublie, la régénère ou la supprime.
 4. Le public parcourt les fiches publiées sur `/` et les lit sur `/films/<id>`.
 

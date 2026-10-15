@@ -29,6 +29,8 @@ class Film(Base):
     overview: Mapped[str] = mapped_column(Text, nullable=False, default="")
     poster_url: Mapped[str | None] = mapped_column(String(500))
     vote_average: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    director: Mapped[str | None] = mapped_column(String(300))
+    cast: Mapped[list[dict[str, str]]] = mapped_column(JSON, nullable=False, default=list)
     analysis: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     had_subtitles: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     model: Mapped[str] = mapped_column(String(100), nullable=False)

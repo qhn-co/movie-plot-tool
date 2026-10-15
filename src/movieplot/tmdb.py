@@ -1,4 +1,8 @@
-"""Client TMDB minimal : recherche d'un film et lecture de sa fiche, en français."""
+"""Client TMDB minimal : recherche d'un film et lecture de sa fiche, en français.
+
+Le réalisateur et les têtes d'affiche viennent des crédits TMDB, pas de Claude : ce sont
+des faits vérifiables qui aident à reconnaître le film.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +12,7 @@ import httpx
 
 TMDB_API = "https://api.themoviedb.org/3"
 POSTER_BASE = "https://image.tmdb.org/t/p/w500"
+CAST_SIZE = 5
 
 
 @dataclass(frozen=True)
@@ -15,6 +20,15 @@ class MovieSummary:
     tmdb_id: int
     title: str
     year: str
+
+
+@dataclass(frozen=True)
+class CastMember:
+    name: str
+    character: str
+
+    def label(self) -> str:
+        return f"{self.name} ({self.character})" if self.character else self.name
 
 
 @dataclass(frozen=True)
@@ -27,6 +41,8 @@ class MovieDetails:
     overview: str
     poster_url: str | None
     vote_average: float
+    director: str | None = None
+    cast: tuple[CastMember, ...] = ()
 
 
 class TmdbClient:
@@ -53,7 +69,13 @@ class TmdbClient:
         ]
 
     def details(self, tmdb_id: int) -> MovieDetails:
-        data = self._get(f"/movie/{tmdb_id}")
+        data = self._get(f"/movie/{tmdb_id}", append_to_response="credits")
+        credits = data.get("credits") or {}
+        directors = [p["name"] for p in credits.get("crew", []) if p.get("job") == "Director"]
+        cast = tuple(
+            CastMember(name=p["name"], character=p.get("character") or "")
+            for p in sorted(credits.get("cast", []), key=lambda p: p.get("order", 0))[:CAST_SIZE]
+        )
         poster = data.get("poster_path")
         return MovieDetails(
             tmdb_id=data["id"],
@@ -64,4 +86,6 @@ class TmdbClient:
             overview=data.get("overview") or "",
             poster_url=f"{POSTER_BASE}{poster}" if poster else None,
             vote_average=float(data.get("vote_average") or 0.0),
+            director=", ".join(directors) or None,
+            cast=cast,
         )

@@ -34,7 +34,7 @@ test("la liste montre les fiches publiées", async () => {
   expect(await screen.findByRole("link", { name: /Inception/ })).toHaveAttribute("href", "/films/1");
 });
 
-test("une fiche affiche l'analyse et cache la fin", async () => {
+test("une fiche affiche l'accroche, le casting et les repères, et cache la fin", async () => {
   mockFetch({
     "/api/films/1": {
       id: 1,
@@ -43,18 +43,25 @@ test("une fiche affiche l'analyse et cache la fin", async () => {
       release_date: "2010-07-15",
       poster_url: null,
       vote_average: 8.4,
+      director: "Christopher Nolan",
+      cast: [{ name: "Leonardo DiCaprio", character: "Dom Cobb" }],
       overview: "",
       had_subtitles: true,
       analysis: {
+        hook: "Le film où l'on vole des secrets dans les rêves.",
+        memory_cues: ["Paris se replie sur elle-même."],
         synopsis: "Un voleur de rêves.",
         timeline: ["Le casse", "Les limbes"],
         ending: "La toupie tourne.",
-        meta_analysis: "Rêve et réalité.",
+        context: "Gros succès de 2010.",
       },
     },
   });
   renderAt("/films/1");
-  expect(await screen.findByText("Un voleur de rêves.")).toBeInTheDocument();
+  expect(await screen.findByText("Le film où l'on vole des secrets dans les rêves.")).toBeInTheDocument();
+  expect(screen.getByText(/Leonardo DiCaprio \(Dom Cobb\)/)).toBeInTheDocument();
+  expect(screen.getByText("Paris se replie sur elle-même.")).toBeInTheDocument();
+  expect(screen.getByText("Un voleur de rêves.")).toBeInTheDocument();
   expect(screen.getByText("Les limbes")).toBeInTheDocument();
   expect(screen.getByText("La toupie tourne.")).not.toBeVisible();
 });

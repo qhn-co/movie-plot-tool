@@ -1,6 +1,6 @@
 # CLAUDE.md — Movie Plot
 
-Movie Plot publie des fiches de films (synopsis, chronologie, fin, analyse). Un admin cherche un film sur TMDB, fait générer la fiche par Claude à partir des sous-titres OpenSubtitles, la relit et la publie ; le public ne fait que lire. Python 3.12 + FastAPI, PostgreSQL (SQLite en local par défaut), front React/Vite/TypeScript servi par l'API, un seul conteneur. Hébergé sur le Coolify de Steven. Projet personnel : process proportionné.
+Movie Plot (`movieplot.qhn.fr`) publie des fiches de films qui aident à se rappeler un film et à savoir si on l'a vu : accroche, scènes marquantes, synopsis, chronologie, fin masquée, contexte. Le prompt est dans `src/movieplot/summarizer.py` ; on le valide sur des exemples avant de le changer. Un admin cherche un film sur TMDB, fait générer la fiche par Claude à partir des sous-titres OpenSubtitles, la relit et la publie ; le public ne fait que lire. Python 3.12 + FastAPI, PostgreSQL (SQLite en local par défaut), front React/Vite/TypeScript servi par l'API, un seul conteneur. Hébergé sur le Coolify de Steven. Projet personnel : process proportionné.
 
 ## Commandes
 

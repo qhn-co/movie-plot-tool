@@ -59,6 +59,8 @@ class FilmService:
             film.overview = movie.overview
             film.poster_url = movie.poster_url
             film.vote_average = movie.vote_average
+            film.director = movie.director
+            film.cast = [{"name": m.name, "character": m.character} for m in movie.cast]
             film.analysis = analysis.model_dump()
             film.had_subtitles = text is not None
             film.model = self._model_name

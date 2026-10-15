@@ -48,12 +48,21 @@ def test_admin_publishes_and_public_reads(admin: TestClient) -> None:
     assert [c["title"] for c in cards] == ["Inception"]
     page = admin.get(f"/api/films/{film_id}").json()
     assert page["analysis"]["synopsis"] == "Synopsis de Inception"
+    assert page["director"] == "Christopher Nolan"
+    assert page["cast"][0] == {"name": "Leonardo DiCaprio", "character": "Dom Cobb"}
     assert "tmdb_id" not in page and "published" not in page
 
 
 def test_admin_edits_analysis(admin: TestClient) -> None:
     film_id = admin.post("/api/admin/films", json={"tmdb_id": INCEPTION.tmdb_id}).json()["id"]
-    analysis = {"synopsis": "Revu", "timeline": ["a"], "ending": "b", "meta_analysis": "c"}
+    analysis = {
+        "hook": "Le film où l'on rêve.",
+        "memory_cues": ["La toupie"],
+        "synopsis": "Revu",
+        "timeline": ["a"],
+        "ending": "b",
+        "context": "c",
+    }
     response = admin.patch(f"/api/admin/films/{film_id}", json={"analysis": analysis})
     assert response.json()["analysis"]["synopsis"] == "Revu"
 
