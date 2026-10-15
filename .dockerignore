@@ -1,0 +1,17 @@
+# Les secrets d'abord : rien de ce qui suit ne doit pouvoir entrer dans une couche d'image.
+.env
+.env.*
+!.env.example
+*.db
+
+.git
+.claude/
+.github/
+.venv/
+**/__pycache__/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+webapp/node_modules/
+webapp/dist/
+tests/
